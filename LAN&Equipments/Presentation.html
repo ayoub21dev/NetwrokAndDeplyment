@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Networking: LAN, WAN & Subnetting</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #6366f1;
+            --accent: #10b981;
+            --bg-dark: #020617;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* --- Layout --- */
+        .presentation-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: var(--transition);
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95);
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 100%);
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        /* --- Background Animation --- */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        /* --- UI Elements --- */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 850px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .header-box {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 { 
+            font-size: 6rem; 
+            font-weight: 700; 
+            line-height: 1; 
+            margin-bottom: 1rem; 
+            letter-spacing: -0.05em; 
+            text-transform: uppercase;
+        }
+        h2 { 
+            font-size: 3rem; 
+            margin-bottom: 1rem; 
+            color: var(--primary); 
+            letter-spacing: -0.02em;
+        }
+        p.subtitle { 
+            font-size: 1.5rem; 
+            color: var(--text-dim); 
+            font-weight: 300;
+        }
+
+        /* --- Animations --- */
+        .animate-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: 1s var(--transition);
+        }
+
+        .active .animate-up {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+        .delay-4 { transition-delay: 0.4s; }
+
+        /* --- Technical Visuals --- */
+        .visual-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        /* Hardware Detail: Switch */
+        .hardware-unit {
+            width: 400px;
+            height: 60px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            position: relative;
+        }
+
+        .port-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 8px;
+            width: 100%;
+        }
+
+        .port {
+            width: 20px;
+            height: 15px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            position: relative;
+        }
+
+        .led {
+            width: 4px;
+            height: 4px;
+            background: #064e3b;
+            border-radius: 50%;
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .led.active {
+            animation: blink 0.2s infinite alternate;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        @keyframes blink {
+            from { opacity: 0.3; }
+            to { opacity: 1; }
+        }
+
+        /* Subnet Visualizer */
+        .subnet-block {
+            display: flex;
+            gap: 4px;
+            margin-top: 2rem;
+        }
+
+        .octet {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--primary);
+            font-family: monospace;
+            font-size: 2rem;
+        }
+
+        .bit-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bit-label { font-size: 0.7rem; color: var(--text-dim); margin-top: 5px; }
+
+        .network-bit { color: var(--primary); }
+        .host-bit { color: var(--text-dim); }
+
+        /* --- Controls --- */
+        .nav-controls {
+            position: fixed;
+            bottom: 3rem;
+            right: 3rem;
+            display: flex;
+            gap: 1.5rem;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .progress-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            width: 0%;
+            z-index: 101;
+            transition: width 0.3s ease;
+        }
+
+        /* Comparison Logic */
+        .comp-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .comp-item {
+            padding: 1.5rem;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .comp-header {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+    <div class="progress-indicator" id="progress"></div>
+
+    <div class="presentation-container" id="presentation">
+
+        <!-- SLIDE 1: Title -->
+        <section class="slide active">
+            <div class="header-box animate-up">
+                <h1 style="background: linear-gradient(to bottom, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">NETWORKING</h1>
+                <p class="subtitle">Deep Dive into LAN, WAN & Architecture</p>
+            </div>
+            <div class="visual-container animate-up delay-2">
+                <svg width="400" height="200" viewBox="0 0 400 200">
+                    <circle cx="200" cy="100" r="80" fill="none" stroke="var(--primary)" stroke-width="0.5" opacity="0.3" />
+                    <circle cx="200" cy="100" r="60" fill="none" stroke="var(--secondary)" stroke-width="0.5" opacity="0.3" />
+                    <g id="data-particles"></g>
+                </svg>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: LAN & WAN -->
+        <section class="slide">
+            <div class="glass-card animate-up">
+                <h2>Network Scales</h2>
+                <div class="comp-grid">
+                    <div class="comp-item">
+                        <div class="comp-header" style="color: var(--accent);">LAN</div>
+                        <p style="font-size: 1.1rem;">A private network for a small area like a <strong>Home or Office</strong>. It's incredibly fast and secure.</p>
+                    </div>
+                    <div class="comp-item">
+                        <div class="comp-header" style="color: var(--secondary);">WAN</div>
+                        <p style="font-size: 1.1rem;">Connects networks across <strong>Cities or Countries</strong>. The Internet is the ultimate WAN.</p>
+                    </div>
+                </div>
+                <div class="visual-container" style="height: 180px; margin-top: 3rem;">
+                    <svg viewBox="0 0 600 150">
+                        <defs>
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                        </defs>
+                        <rect x="50" y="40" width="100" height="70" rx="15" fill="rgba(59, 130, 246, 0.1)" stroke="var(--primary)" stroke-width="2" filter="url(#glow)" />
+                        <text x="100" y="85" text-anchor="middle" fill="var(--text-main)" font-size="14" font-weight="bold">HOME</text>
+                        
+                        <path d="M150,75 L450,75" stroke="rgba(255,255,255,0.1)" stroke-width="2" stroke-dasharray="10,5" />
+                        
+                        <rect x="450" y="40" width="100" height="70" rx="15" fill="rgba(99, 102, 241, 0.1)" stroke="var(--secondary)" stroke-width="2" filter="url(#glow)" />
+                        <text x="500" y="85" text-anchor="middle" fill="var(--text-main)" font-size="14" font-weight="bold">OFFICE</text>
+                        
+                        <circle r="6" fill="#fff" style="filter: drop-shadow(0 0 8px var(--accent));">
+                            <animateMotion dur="3s" repeatCount="indefinite" path="M150,75 L450,75" />
+                        </circle>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: The Switch -->
+        <section class="slide">
+            <div class="glass-card animate-up">
+                <h2>The Network Switch</h2>
+                <p style="margin-bottom: 2rem; font-size: 1.1rem;">The "Smart Hub" of your local network. It connects all your devices (PC, Console, Printer) and sends data directly to the right destination.</p>
+                <div class="hardware-unit" style="box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); margin: 2rem auto;">
+                    <div class="port-grid">
+                        <div class="port"><div class="led active"></div></div>
+                        <div class="port"><div class="led active" style="animation-delay: 0.2s"></div></div>
+                        <div class="port"><div class="led active" style="animation-delay: 0.1s"></div></div>
+                        <div class="port"><div class="led active" style="animation-delay: 0.5s"></div></div>
+                        <div class="port"><div class="led"></div></div>
+                        <div class="port"><div class="led active"></div></div>
+                        <div class="port"><div class="led active" style="animation-delay: 0.3s"></div></div>
+                        <div class="port"><div class="led"></div></div>
+                        <div class="port"><div class="led active"></div></div>
+                        <div class="port"><div class="led active"></div></div>
+                        <div class="port"><div class="led active" style="animation-delay: 0.4s"></div></div>
+                        <div class="port"><div class="led active"></div></div>
+                    </div>
+                </div>
+                <div class="comp-item" style="margin-top: 1rem; border-left: 4px solid var(--accent); background: rgba(16, 185, 129, 0.05);">
+                    <p style="font-size: 1rem;">🚀 <strong>Fast:</strong> No traffic jams. Data only goes where it's needed.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: Router & Gateway -->
+        <section class="slide">
+            <div class="glass-card animate-up">
+                <h2>Routing & The Gateway</h2>
+                <div class="comp-grid">
+                    <div>
+                        <h3 style="color: var(--primary); font-size: 1.5rem;">Router</h3>
+                        <p style="font-size: 1rem; color: var(--text-dim);">The brain that connects different networks together. It finds the best path for your data.</p>
+                        <!-- Simplified Routing HUD -->
+                        <div class="comp-item" style="margin-top: 1.5rem; background: rgba(59, 130, 246, 0.1); border: 1px solid var(--primary); padding: 10px; border-radius: 8px;">
+                            <p style="font-family: monospace; font-size: 0.8rem; color: var(--primary);">➔ Path Selection Active...</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="color: var(--secondary); font-size: 1.5rem;">Gateway</h3>
+                        <p style="font-size: 1rem; color: var(--text-dim);">The "Exit Door" of your network. It's how you leave your house and enter the Internet.</p>
+                    </div>
+                </div>
+                <div class="visual-container">
+                    <svg viewBox="0 0 400 200" width="100%">
+                        <!-- Router Core with Pulse -->
+                        <circle cx="200" cy="100" r="35" fill="rgba(59, 130, 246, 0.1)" stroke="var(--primary)" stroke-width="2">
+                            <animate attributeName="r" values="35;40;35" dur="3s" repeatCount="indefinite" />
+                            <animate attributeName="stroke-opacity" values="1;0.3;1" dur="3s" repeatCount="indefinite" />
+                        </circle>
+                        <circle cx="200" cy="100" r="25" fill="#1e293b" stroke="var(--primary)" stroke-width="2" />
+                        <path d="M185,100 L215,100 M200,85 L200,115" stroke="white" stroke-width="2" />
+                        
+                        <!-- Data Flows -->
+                        <circle r="4" fill="var(--accent)">
+                            <animateMotion dur="2.5s" repeatCount="indefinite" path="M50,100 L200,100" />
+                        </circle>
+                        <circle r="4" fill="var(--accent)">
+                            <animateMotion dur="2.5s" begin="1.2s" repeatCount="indefinite" path="M200,100 L350,100" />
+                        </circle>
+                        <line x1="50" y1="100" x2="350" y2="100" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: The Modem -->
+        <section class="slide">
+            <div class="glass-card animate-up">
+                <h2>The Modem</h2>
+                <p style="font-size: 1.1rem;">Your gateway to the world. It converts the <strong>Analog signals</strong> from your ISP into the <strong>Digital signals</strong> your devices understand.</p>
+                <div class="visual-container">
+                    <svg viewBox="0 0 600 200">
+                        <!-- Digital Signal -->
+                        <path d="M20,100 L40,100 L40,60 L80,60 L80,100 L120,100 L120,140 L160,140 L160,100 L200,100" fill="none" stroke="var(--accent)" stroke-width="3" style="filter: drop-shadow(0 0 5px var(--accent));" />
+                        
+                        <!-- Converter -->
+                        <rect x="250" y="60" width="100" height="80" rx="15" fill="rgba(30, 41, 59, 0.9)" stroke="var(--primary)" stroke-width="2" style="filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.3));" />
+                        <text x="300" y="105" text-anchor="middle" fill="white" font-weight="bold" font-family="Space Grotesk">MODEM</text>
+                        
+                        <!-- Analog Signal -->
+                        <path d="M400,100 C420,40 440,160 460,100 C480,40 500,160 520,100 C540,40 560,160 580,100" fill="none" stroke="var(--secondary)" stroke-width="3" style="filter: drop-shadow(0 0 5px var(--secondary));">
+                             <animate attributeName="stroke-dasharray" from="0,1000" to="1000,0" dur="4s" repeatCount="indefinite" />
+                        </path>
+                    </svg>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-dim); text-align: center;">Modulation (Digital ➔ Analog) & Demodulation (Analog ➔ Digital)</p>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: Subnetting Logic -->
+        <section class="slide">
+            <div class="glass-card animate-up">
+                <h2>Subnetting Mastery</h2>
+                <p>Subnetting partitions a large network into smaller segments. Adjust the slider to see how the <strong>Subnet Mask</strong> changes the network capacity.</p>
+                
+                <div style="display: flex; flex-direction: column; align-items: center; margin-top: 2rem;">
+                    <div class="subnet-block">
+                        <div class="bit-container">
+                            <div class="octet" id="ip-display">192.168.1.0</div>
+                            <div class="bit-label">BASE NETWORK</div>
+                        </div>
+                        <div class="octet" style="border-color: var(--secondary); color: var(--secondary);" id="cidr-display">/24</div>
+                    </div>
+
+                    <!-- Interactive Slider -->
+                    <div style="width: 100%; max-width: 400px; margin-top: 2rem;">
+                        <input type="range" id="cidr-slider" min="8" max="30" value="24" style="width: 100%; accent-color: var(--primary);">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-dim); margin-top: 5px;">
+                            <span>/8 (Large)</span>
+                            <span>/24 (Typical)</span>
+                            <span>/30 (Tiny)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comp-grid" style="margin-top: 2rem;">
+                    <div class="comp-item">
+                        <div class="comp-header">Subnet Mask</div>
+                        <p style="font-size: 1.2rem; font-family: monospace;" id="mask-display">255.255.255.0</p>
+                    </div>
+                    <div class="comp-item">
+                        <div class="comp-header">Usable Hosts</div>
+                        <p style="font-size: 1.2rem; font-family: monospace; color: var(--accent);" id="hosts-display">254</p>
+                    </div>
+                </div>
+
+                <div class="visual-container" style="height: 100px; margin-top: 1rem;">
+                    <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                        <div style="display: flex; gap: 4px; flex-wrap: wrap; justify-content: center;" id="bit-visualizer">
+                            <!-- JS will populate 32 bits -->
+                        </div>
+                        <div style="display: flex; width: 100%; max-width: 480px; justify-content: space-between; margin-top: 10px; font-size: 0.7rem; color: var(--primary);">
+                            <span>NETWORK PORTION</span>
+                            <span style="color: var(--text-dim);">HOST PORTION</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 7: System Overview -->
+        <section class="slide">
+            <div class="header-box animate-up">
+                <h2 style="font-size: 4rem;">Architecture Complete</h2>
+                <p class="subtitle">From Local Cables to Global Clouds</p>
+            </div>
+            <div class="comp-grid animate-up delay-2" style="max-width: 800px; width: 100%;">
+                <div class="comp-item" style="text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="comp-header" style="color: var(--accent);">CONNECT</div>
+                    <p style="font-size: 1.2rem;">Modem & Gateway</p>
+                </div>
+                <div class="comp-item" style="text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="comp-header" style="color: var(--primary);">ORGANIZE</div>
+                    <p style="font-size: 1.2rem;">Switch & Subnets</p>
+                </div>
+            </div>
+            <p class="animate-up delay-3" style="margin-top: 4rem; font-family: Space Grotesk; font-weight: 300; opacity: 0.6;">NETWORKING_ESSENTIALS // END_SESSION</p>
+        </section>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <button class="nav-btn" onclick="nextSlide()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const container = document.getElementById('presentation');
+        const progress = document.getElementById('progress');
+
+        function update() {
+            // Container doesn't slide anymore, opacity and scale handle it
+            slides.forEach((s, i) => {
+                if(i === currentSlide) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+            progress.style.width = `${((currentSlide + 1) / slides.length) * 100}%`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                update();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                update();
+            }
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Background Animation Logic
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(59, 130, 246, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+        }
+
+        for (let i = 0; i < 100; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Subnet Bit Visualizer Logic
+        const bitViz = document.getElementById('bit-visualizer');
+        const cidrSlider = document.getElementById('cidr-slider');
+        const cidrDisplay = document.getElementById('cidr-display');
+        const maskDisplay = document.getElementById('mask-display');
+        const hostsDisplay = document.getElementById('hosts-display');
+
+        function updateSubnetUI(cidr) {
+            cidrDisplay.innerText = `/${cidr}`;
+            
+            // Calculate Mask
+            let mask = [];
+            for (let i = 0; i < 4; i++) {
+                let n = Math.min(Math.max(cidr - i * 8, 0), 8);
+                mask.push(256 - Math.pow(2, 8 - n));
+            }
+            maskDisplay.innerText = mask.join('.');
+
+            // Calculate Hosts
+            const hosts = Math.pow(2, 32 - cidr) - 2;
+            hostsDisplay.innerText = hosts > 0 ? hosts.toLocaleString() : 0;
+
+            // Update Bits
+            bitViz.innerHTML = '';
+            for (let i = 0; i < 32; i++) {
+                const bit = document.createElement('div');
+                bit.style.width = '12px';
+                bit.style.height = '12px';
+                bit.style.transition = '0.3s';
+                bit.style.background = i < cidr ? 'var(--primary)' : 'rgba(255,255,255,0.1)';
+                bit.style.borderRadius = '2px';
+                if (i < cidr) bit.style.boxShadow = '0 0 5px var(--primary)';
+                bitViz.appendChild(bit);
+            }
+        }
+
+        cidrSlider.addEventListener('input', (e) => {
+            updateSubnetUI(parseInt(e.target.value));
+        });
+
+        // Initialize Subnet UI
+        updateSubnetUI(24);
+
+        update();
+    </script>
+</body>
+</html>

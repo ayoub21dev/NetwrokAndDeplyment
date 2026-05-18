@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ubuntu Tutorial - Presentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ubuntu-presentation.css">
+</head>
+<body>
+
+<!-- Navigation dots -->
+<div class="nav-dots" id="navDots"></div>
+
+<!-- Slide counter -->
+<div class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides"></span></div>
+
+<!-- Arrow controls -->
+<button class="arrow-btn arrow-left" onclick="prevSlide()">&#8592;</button>
+<button class="arrow-btn arrow-right" onclick="nextSlide()">&#8594;</button>
+
+<!-- SLIDE 1: Title -->
+<section class="slide active" data-index="0">
+  <div class="slide-bg-circle"></div>
+  <div class="slide-content center-content">
+    <div class="ubuntu-logo-circle">
+      <svg viewBox="0 0 120 120" width="120" height="120">
+        <circle cx="60" cy="60" r="55" fill="#E95420"/>
+        <circle cx="60" cy="20" r="10" fill="#fff"/>
+        <circle cx="25" cy="80" r="10" fill="#fff"/>
+        <circle cx="95" cy="80" r="10" fill="#fff"/>
+        <circle cx="60" cy="60" r="18" fill="none" stroke="#fff" stroke-width="5"/>
+      </svg>
+    </div>
+    <h1 class="title-main">Ubuntu</h1>
+    <p class="title-sub">Tutorial: Simple & Clear Definition</p>
+    <div class="title-badge">Linux Operating System</div>
+    <p class="title-hint">Press <kbd>→</kbd> to begin</p>
+  </div>
+</section>
+
+<!-- SLIDE 2: What is Ubuntu -->
+<section class="slide" data-index="1">
+  <div class="slide-bg-circle alt"></div>
+  <div class="slide-content">
+    <span class="slide-label">01</span>
+    <h2>What is Ubuntu?</h2>
+    <div class="definition-card">
+      <div class="def-icon">📖</div>
+      <p><strong>Ubuntu</strong> is a free and open-source <em>operating system</em> (OS) based on <strong>Linux</strong>.</p>
+      <p>It is an alternative to Windows and macOS.</p>
+    </div>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-icon">💰</span>
+        <h4>Free</h4>
+        <p>100% free, no license required</p>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">🔓</span>
+        <h4>Open Source</h4>
+        <p>Source code is open to everyone</p>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">🛡️</span>
+        <h4>Secure</h4>
+        <p>Less vulnerable to viruses</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: Why use Ubuntu -->
+<section class="slide" data-index="2">
+  <div class="slide-bg-circle"></div>
+  <div class="slide-content">
+    <span class="slide-label">02</span>
+    <h2>Why Use Ubuntu?</h2>
+    <div class="advantages-list">
+      <div class="adv-item"><span class="adv-num">1</span><div><h4>Free & Open Source</h4><p>No cost, downloadable from ubuntu.com</p></div></div>
+      <div class="adv-item"><span class="adv-num">2</span><div><h4>Security</h4><p>Very few viruses, regular updates</p></div></div>
+      <div class="adv-item"><span class="adv-num">3</span><div><h4>Lightweight & Fast</h4><p>Runs well even on older hardware</p></div></div>
+      <div class="adv-item"><span class="adv-num">4</span><div><h4>Community</h4><p>Massive online help and active forums</p></div></div>
+      <div class="adv-item"><span class="adv-num">5</span><div><h4>Ideal for Servers</h4><p>Used by the majority of web servers</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: Interface -->
+<section class="slide" data-index="3">
+  <div class="slide-bg-circle alt"></div>
+  <div class="slide-content">
+    <span class="slide-label">03</span>
+    <h2>The GNOME Interface</h2>
+    <p class="slide-desc">Ubuntu uses the <strong>GNOME</strong> desktop environment — modern and intuitive.</p>
+    <div class="interface-demo">
+      <div class="mock-desktop">
+        <div class="mock-topbar">
+          <span>Activities</span>
+          <span>Tue Apr 22 12:00</span>
+          <span>🔋 🔊 ⚙️</span>
+        </div>
+        <div class="mock-body">
+          <div class="mock-dock">
+            <div class="dock-icon" style="background:#E95420;">📁</div>
+            <div class="dock-icon" style="background:#3468E5;">🌐</div>
+            <div class="dock-icon" style="background:#2D2D2D;">💻</div>
+            <div class="dock-icon" style="background:#77216F;">📝</div>
+            <div class="dock-icon" style="background:#48B9C7;">📦</div>
+          </div>
+          <div class="mock-wallpaper">
+            <p>Ubuntu Desktop</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: Terminal -->
+<section class="slide" data-index="4">
+  <div class="slide-bg-circle"></div>
+  <div class="slide-content">
+    <span class="slide-label">04</span>
+    <h2>The Terminal (CLI)</h2>
+    <p class="slide-desc">The <strong>Terminal</strong> lets you control Ubuntu using text commands.</p>
+    <div class="terminal-window">
+      <div class="terminal-header">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+        <span class="terminal-title">Terminal</span>
+      </div>
+      <div class="terminal-body">
+        <p><span class="prompt">user@ubuntu:~$</span> sudo apt update</p>
+        <p class="output">[sudo] password for user:</p>
+        <p class="output">Reading package lists... Done</p>
+        <p><span class="prompt">user@ubuntu:~$</span> sudo apt install firefox</p>
+        <p class="output">firefox is already the newest version ✓</p>
+        <p><span class="prompt">user@ubuntu:~$</span> <span class="cursor-blink">|</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: Essential commands -->
+<section class="slide" data-index="5">
+  <div class="slide-bg-circle alt"></div>
+  <div class="slide-content">
+    <span class="slide-label">05</span>
+    <h2>Essential Commands</h2>
+    <div class="cmd-grid">
+      <div class="cmd-card">
+        <code>ls</code>
+        <p>List files</p>
+      </div>
+      <div class="cmd-card">
+        <code>cd</code>
+        <p>Change directory</p>
+      </div>
+      <div class="cmd-card">
+        <code>mkdir</code>
+        <p>Create a folder</p>
+      </div>
+      <div class="cmd-card">
+        <code>cp</code>
+        <p>Copy a file</p>
+      </div>
+      <div class="cmd-card">
+        <code>mv</code>
+        <p>Move / Rename</p>
+      </div>
+      <div class="cmd-card">
+        <code>rm</code>
+        <p>Delete a file</p>
+      </div>
+      <div class="cmd-card">
+        <code>sudo</code>
+        <p>Run as admin</p>
+      </div>
+      <div class="cmd-card">
+        <code>apt install</code>
+        <p>Install software</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 7: Installation -->
+<section class="slide" data-index="6">
+  <div class="slide-bg-circle"></div>
+  <div class="slide-content">
+    <span class="slide-label">06</span>
+    <h2>How to Install Ubuntu?</h2>
+    <div class="steps-flow">
+      <div class="step-item">
+        <div class="step-circle">1</div>
+        <h4>Download</h4>
+        <p>Go to <strong>ubuntu.com</strong> and download the ISO file</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-item">
+        <div class="step-circle">2</div>
+        <h4>Create USB Drive</h4>
+        <p>Use <strong>Rufus</strong> or <strong>Balena Etcher</strong></p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-item">
+        <div class="step-circle">3</div>
+        <h4>Boot from USB</h4>
+        <p>Restart the PC and boot from the USB drive</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-item">
+        <div class="step-circle">4</div>
+        <h4>Install</h4>
+        <p>Follow the installation wizard</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: Versions -->
+<section class="slide" data-index="7">
+  <div class="slide-bg-circle alt"></div>
+  <div class="slide-content">
+    <span class="slide-label">07</span>
+    <h2>Ubuntu Versions</h2>
+    <div class="versions-table">
+      <table>
+        <thead>
+          <tr><th>Type</th><th>Release Cycle</th><th>Support</th><th>Best For</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge lts">LTS</span></td>
+            <td>Every 2 years</td>
+            <td>5 years</td>
+            <td>Production / Servers</td>
+          </tr>
+          <tr>
+            <td><span class="badge regular">Regular</span></td>
+            <td>Every 6 months</td>
+            <td>9 months</td>
+            <td>Latest features</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="flavor-chips">
+      <h4>Flavors (Variants):</h4>
+      <div class="chips-row">
+        <span class="chip">Kubuntu</span>
+        <span class="chip">Xubuntu</span>
+        <span class="chip">Lubuntu</span>
+        <span class="chip">Ubuntu MATE</span>
+        <span class="chip">Ubuntu Server</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: Comparison -->
+<section class="slide" data-index="8">
+  <div class="slide-bg-circle"></div>
+  <div class="slide-content">
+    <span class="slide-label">08</span>
+    <h2>Ubuntu vs Windows vs macOS</h2>
+    <div class="comparison-table">
+      <table>
+        <thead>
+          <tr><th>Criteria</th><th>🟠 Ubuntu</th><th>🔵 Windows</th><th>⚪ macOS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Price</td><td>✅ Free</td><td>❌ Paid</td><td>❌ Paid (Mac)</td></tr>
+          <tr><td>Security</td><td>✅ Excellent</td><td>⚠️ Average</td><td>✅ Good</td></tr>
+          <tr><td>Open Source</td><td>✅ Yes</td><td>❌ No</td><td>❌ No</td></tr>
+          <tr><td>Performance</td><td>✅ Lightweight</td><td>⚠️ Heavy</td><td>✅ Optimized</td></tr>
+          <tr><td>Software</td><td>⚠️ Limited</td><td>✅ Very rich</td><td>✅ Rich</td></tr>
+          <tr><td>Gaming</td><td>⚠️ Improving</td><td>✅ Best</td><td>⚠️ Limited</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10: Conclusion -->
+<section class="slide" data-index="9">
+  <div class="slide-bg-circle alt"></div>
+  <div class="slide-content center-content">
+    <div class="ubuntu-logo-circle">
+      <svg viewBox="0 0 120 120" width="100" height="100">
+        <circle cx="60" cy="60" r="55" fill="#E95420"/>
+        <circle cx="60" cy="20" r="10" fill="#fff"/>
+        <circle cx="25" cy="80" r="10" fill="#fff"/>
+        <circle cx="95" cy="80" r="10" fill="#fff"/>
+        <circle cx="60" cy="60" r="18" fill="none" stroke="#fff" stroke-width="5"/>
+      </svg>
+    </div>
+    <h2>Summary</h2>
+    <div class="summary-points">
+      <p>✅ Ubuntu = A <strong>free</strong> operating system based on Linux</p>
+      <p>✅ <strong>Secure</strong>, lightweight, and easy to use</p>
+      <p>✅ Ideal for <strong>servers</strong>, development, and daily use</p>
+      <p>✅ Large support <strong>community</strong></p>
+    </div>
+    <div class="title-badge" style="margin-top:2rem;">ubuntu.com</div>
+    <p class="title-sub" style="margin-top:2rem;">Thank you for your attention! 🎉</p>
+  </div>
+</section>
+
+<script src="ubuntu-presentation.js"></script>
+</body>
+</html>
